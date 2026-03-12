@@ -12,8 +12,41 @@ Multi-Document Comparison & Decision Assistant
 - drf-yasg (Swagger / OpenAPI)
 - Docker
 
+## Enviroment
+```bash
 echo "*" > .venv/.gitignore
 source venv/bin/activate
+
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+```
+
+## For tests
+```bash
+pytest
+```
+
+## Coverage
+```bash
+coverage run -m pytest
+coverage report -m
+
+#debuging
+coverage run -m pytest -vv -s
+```
+## Linting & Formatting
+# Flake
+```bash
+flake8 .
+```
+# Black
+```bash
+black .
+
+#Check
+black --check .
+```
 
 ## Docker
 ```bash

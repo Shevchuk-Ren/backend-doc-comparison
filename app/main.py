@@ -3,7 +3,6 @@ from app.core.config import settings
 from app.routers.healthcheck import router as health_router
 from fastapi.middleware.cors import CORSMiddleware
 
-
 app = FastAPI(title=settings.title)
 
 allowed_org = settings.cors_origins
