@@ -4,9 +4,8 @@ import uvicorn
 
 app = FastAPI(title=settings.title)
 
-host = settings.host
-port = int(settings.port)
-uvicorn.run("app.main:app", host=host, port=port, reload=True)
+
+
 
 
 @app.get("/")
