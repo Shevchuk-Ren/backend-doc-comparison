@@ -1,33 +1,33 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import HTTPException, status
 from app.core.validators import DocumentValidator
+from app.services.document_parser import DocumentParser
 
-doc_validator = DocumentValidator(max_size=25 * 1024 * 1024)  
 
-async def doc_processed_payload(files) -> dict:
-    processed_inputs = []
+class DocumentService:
+    def __init__(self):
+        self.validator = DocumentValidator()
+        self.parser = DocumentParser()
 
-    if len(files) < 2 or len(files) > 5:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Min 3 and max 5 files needed",
-)
-
-    for file in files:
-        validation = await doc_validator.validate_file(file)
-        
-        if not validation["valid"]:
+    async def doc_processed(self, files) -> dict:
+        if len(files) < 2 or len(files) > 5:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail={
-                    "message": "File validation failed",
-                    "errors": validation["errors"]
-                    }
-                )
-        
-        processed_inputs.append({
-            "filename": file.filename,
-            "content_type": file.content_type,
-            "size": validation["size"],
-        })
+                detail="You must upload from 2 to 5 documents.",
+            )
 
-    return {"files": processed_inputs}
+        parsed_files = []
+
+        for file in files:
+            validation = await self.validator.validate_file(file)
+
+            if not validation["valid"]:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail={"filename": file.filename, "errors": validation["errors"]},
+                )
+
+            parsed = await self.parser.parse(file)
+            parsed["size"] = validation["size"]
+            parsed_files.append(parsed)
+
+        return {"documents": parsed_files}

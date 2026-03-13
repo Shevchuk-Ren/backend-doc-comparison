@@ -1,14 +1,15 @@
 from pathlib import Path
 from fastapi import UploadFile
 
+
 class DocumentValidator:
-    def __init__(self, max_size: int = 10 * 1024 * 1024):  
+    def __init__(self, max_size: int = 10 * 1024 * 1024):
         self.max_size = max_size
-        self.allowed_extensions = {'.pdf', '.txt', '.docx'}
+        self.allowed_extensions = {".pdf", ".txt", ".docx"}
 
     async def validate_file(self, file: UploadFile) -> dict:
         """Check if the document file is valid"""
-        result = {"valid": True, "errors": [],  "size": 0}
+        result = {"valid": True, "errors": [], "size": 0}
 
         # Check if user selected a file
         if not file.filename or file.filename.strip() == "":
@@ -26,19 +27,20 @@ class DocumentValidator:
 
         # Read file to check size
         content = await file.read()
-        await file.seek(0)  
+        await file.seek(0)
 
         # Check file size
         file_size = len(content)
+        result["size"] = file_size
+
         if file_size == 0:
             result["valid"] = False
             result["errors"].append("File is empty")
-            
+
         if file_size > self.max_size:
             result["valid"] = False
             result["errors"].append(
                 f"File too large ({file_size:,} bytes). Maximum: {self.max_size:,} bytes"
             )
-            result["size"]= file_size
 
         return result
