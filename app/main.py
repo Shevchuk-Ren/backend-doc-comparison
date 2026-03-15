@@ -1,8 +1,9 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI
 from app.core.config import settings
 from app.routers.healthcheck import router as health_router
 from app.routers.document import router as doc_router
 from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI(
     title=settings.title,
@@ -22,8 +23,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.post("/uploadfiles/")
-async def create_upload_files(files: list[UploadFile]):
-    return {"filenames": [file.filename for file in files]}

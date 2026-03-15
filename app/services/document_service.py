@@ -1,14 +1,18 @@
-from fastapi import HTTPException, status
-from app.core.validators import DocumentValidator
+from fastapi import HTTPException, UploadFile, status
+from app.validators.document_validator import DocumentValidator
 from app.services.document_parser import DocumentParser
+from app.services.ollama_service import OllamaService
+import json
+from app.prompts.document_summary import SYSTEM_PROMPT, build_document_prompt
 
 
 class DocumentService:
     def __init__(self):
         self.validator = DocumentValidator()
         self.parser = DocumentParser()
+        self.ollama_service = OllamaService()
 
-    async def doc_processed(self, files) -> dict:
+    async def process_documents(self, files: list[UploadFile]) -> dict:
         if len(files) < 2 or len(files) > 5:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -28,6 +32,20 @@ class DocumentService:
 
             parsed = await self.parser.parse(file)
             parsed["size"] = validation["size"]
+
+            summary = await self.ollama_service.chat(
+                system_prompt=SYSTEM_PROMPT,
+                user_prompt=build_document_prompt(parsed["text"]),
+            )
+            try:
+                summary_data = json.loads(summary)
+            except json.JSONDecodeError:
+                raise HTTPException(
+                    status_code=status.HTTP_502_BAD_GATEWAY,
+                    detail=f"Invalid JSON returned by LLM for file {file.filename}",
+                )
+
+            parsed["summary"] = summary_data
             parsed_files.append(parsed)
 
         return {"documents": parsed_files}

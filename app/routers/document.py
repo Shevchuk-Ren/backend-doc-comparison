@@ -10,5 +10,5 @@ document_service = DocumentService()
 @router.post("/parse")
 async def parse_documents(files: List[UploadFile] = File(...)):
 
-    result = await document_service.doc_processed(files)
+    result = await document_service.process_documents(files)
     return result
