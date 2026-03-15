@@ -20,6 +20,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 
+python -m pip install <package-name>
+pip freeze > requirements.txt
+
 ```
 
 ## For tests
