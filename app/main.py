@@ -1,10 +1,9 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI
 from app.core.config import settings
 from app.routers.healthcheck import router as health_router
 from app.routers.document import router as doc_router
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.services.ollama_service import OllamaService
 
 app = FastAPI(
     title=settings.title,
@@ -24,13 +23,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-ollama_service = OllamaService()
-
-@app.post("/documents/test-llm")
-async def test_llm():
-    result = await ollama_service.chat(
-        system_prompt="You are a document analysis assistant.",
-        user_prompt="Summarize this text: This contract includes a 12 month term and automatic renewal."
-    )
-    return {"response": result}

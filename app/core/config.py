@@ -20,5 +20,4 @@ class Settings(BaseSettings):
     ollama_key: str = Field(alias="OLLAMA_API_KEY")
 
 
-
 settings = Settings()

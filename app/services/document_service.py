@@ -1,10 +1,10 @@
 from fastapi import HTTPException, UploadFile, status
 from app.validators.document_validator import DocumentValidator
-from app.services import ollama_service
 from app.services.document_parser import DocumentParser
 from app.services.ollama_service import OllamaService
 import json
-from app.promts.document_summary import SYSTEM_PROMPT, build_document_prompt
+from app.prompts.document_summary import SYSTEM_PROMPT, build_document_prompt
+
 
 class DocumentService:
     def __init__(self):
@@ -29,15 +29,13 @@ class DocumentService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail={"filename": file.filename, "errors": validation["errors"]},
                 )
-            
+
             parsed = await self.parser.parse(file)
             parsed["size"] = validation["size"]
-           
-
 
             summary = await self.ollama_service.chat(
                 system_prompt=SYSTEM_PROMPT,
-                user_prompt = build_document_prompt(parsed["text"]),
+                user_prompt=build_document_prompt(parsed["text"]),
             )
             try:
                 summary_data = json.loads(summary)
@@ -49,7 +47,5 @@ class DocumentService:
 
             parsed["summary"] = summary_data
             parsed_files.append(parsed)
-            
-
 
         return {"documents": parsed_files}
