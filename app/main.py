@@ -4,6 +4,8 @@ from app.routers.healthcheck import router as health_router
 from app.routers.document import router as doc_router
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.services.ollama_service import OllamaService
+
 app = FastAPI(
     title=settings.title,
     version="0.1.0",
@@ -23,7 +25,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+ollama_service = OllamaService()
 
-@app.post("/uploadfiles/")
-async def create_upload_files(files: list[UploadFile]):
-    return {"filenames": [file.filename for file in files]}
+@app.post("/documents/test-llm")
+async def test_llm():
+    result = await ollama_service.chat(
+        system_prompt="You are a document analysis assistant.",
+        user_prompt="Summarize this text: This contract includes a 12 month term and automatic renewal."
+    )
+    return {"response": result}
