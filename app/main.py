@@ -4,7 +4,6 @@ from app.routers.healthcheck import router as health_router
 from app.routers.document import router as doc_router
 from fastapi.middleware.cors import CORSMiddleware
 
-
 app = FastAPI(
     title=settings.title,
     version="0.1.0",
