@@ -1,9 +1,10 @@
 from fastapi import HTTPException, UploadFile, status
 from app.validators.document_validator import DocumentValidator
-from app.services.document_parser import DocumentParser
-from app.services.ollama_service import OllamaService
+from .document_parser import DocumentParser
+from .ollama_service import OllamaService
 import json
 from app.prompts.document_summary import SYSTEM_PROMPT, build_document_prompt
+from .comparison_service import ComparisonService
 
 
 class DocumentService:
@@ -11,6 +12,7 @@ class DocumentService:
         self.validator = DocumentValidator()
         self.parser = DocumentParser()
         self.ollama_service = OllamaService()
+        self.comparison_service = ComparisonService()
 
     async def process_documents(self, files: list[UploadFile]) -> dict:
         if len(files) < 2 or len(files) > 5:
@@ -48,4 +50,6 @@ class DocumentService:
             parsed["summary"] = summary_data
             parsed_files.append(parsed)
 
-        return {"documents": parsed_files}
+        table = self.comparison_service.comparison_table(parsed_files)
+
+        return {"documents": parsed_files, **table}
