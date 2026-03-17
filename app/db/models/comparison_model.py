@@ -12,6 +12,9 @@ class Comparison(Base):
     decision_summary = Column(JSON)
     created_at = Column(DateTime, server_default=func.now())
 
+    user = relationship("User", back_populates="comparisons")
+    documents = relationship("ComparisonDocument", back_populates="comparison")
+
 
 class ComparisonDocument(Base):
     __tablename__ = "comparison_documents"
@@ -19,7 +22,5 @@ class ComparisonDocument(Base):
     comparison_id = Column(Integer, ForeignKey("comparisons.id"), primary_key=True)
     document_id = Column(Integer, ForeignKey("documents.id"), primary_key=True)
 
-    user = relationship("User", back_populates="comparisons")
-    documents = relationship(
-        "DocumentModel", secondary="comparison_documents", back_populates="comparisons"
-    )
+    comparison = relationship("Comparison", back_populates="documents")
+    document = relationship("DocumentModel", back_populates="comparisons")
