@@ -1,14 +1,12 @@
 from typing import List
 from fastapi import APIRouter, File, UploadFile
-from app.services.document_service import DocumentService
+from app.core.orchestrator import orchestrator
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
-document_service = DocumentService()
 
+@router.post("/analysis")
+async def analysis_documents(files: List[UploadFile] = File(...)):
 
-@router.post("/parse")
-async def parse_documents(files: List[UploadFile] = File(...)):
-
-    result = await document_service.process_documents(files)
+    result = await orchestrator.process_documents(files)
     return result

@@ -36,9 +36,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: testdb
+          POSTGRES_USER: ${{secrets.POSTGRES_USER}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+          POSTGRES_DB: ${{secrets.POSTGRES_DB}}
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=5s
@@ -65,13 +65,20 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Run migrations
         env:
-          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
+          DB_URL: ${{secrets.DATABASE_URL}}
+          OLLAMA_API_KEY: ${{secrets.OLLAMA_API_KEY}}
+          SECRET_AUTH_KEY: ${{secrets.SECRET_AUTH_KEY}}
+          ALGORITHM: ${{secrets.ALGORITHM}}
+          ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
         run: alembic upgrade head
 
       - name: Run tests with coverage
         env:
-          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
-          OLLAMA_API_KEY: test-key
+          DB_URL: ${{secrets.DATABASE_URL}}
+          OLLAMA_API_KEY: ${{secrets.OLLAMA_API_KEY}}
+          SECRET_AUTH_KEY: ${{secrets.SECRET_AUTH_KEY}}
+          ALGORITHM: ${{secrets.ALGORITHM}}
+          ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
         run: |
           coverage run -m pytest
           coverage report -m
