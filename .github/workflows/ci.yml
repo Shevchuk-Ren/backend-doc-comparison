@@ -65,12 +65,16 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Run migrations
         env:
-          DATABASE_URL: ${{secrets.DATABASE_URL}}
+          DB_URL: ${{secrets.DATABASE_URL}}
+          OLLAMA_API_KEY: ${{secrets.OLLAMA_API_KEY}}
+          SECRET_AUTH_KEY: ${{secrets.SECRET_AUTH_KEY}}
+          ALGORITHM: ${{secrets.ALGORITHM}}
+          ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
         run: alembic upgrade head
 
       - name: Run tests with coverage
         env:
-          DATABASE_URL: ${{secrets.DATABASE_URL}}
+          DB_URL: ${{secrets.DATABASE_URL}}
           OLLAMA_API_KEY: ${{secrets.OLLAMA_API_KEY}}
           SECRET_AUTH_KEY: ${{secrets.SECRET_AUTH_KEY}}
           ALGORITHM: ${{secrets.ALGORITHM}}
