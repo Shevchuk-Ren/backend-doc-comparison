@@ -5,6 +5,7 @@ from .ollama_service import OllamaService
 import json
 from app.prompts.document_summary import SYSTEM_PROMPT, build_document_prompt
 from .comparison_service import ComparisonService
+from .decision_service import DecisionService
 
 
 class DocumentService:
@@ -13,6 +14,7 @@ class DocumentService:
         self.parser = DocumentParser()
         self.ollama_service = OllamaService()
         self.comparison_service = ComparisonService()
+        self.decision_service = DecisionService()
 
     async def process_documents(self, files: list[UploadFile]) -> dict:
         if len(files) < 2 or len(files) > 5:
@@ -51,5 +53,6 @@ class DocumentService:
             parsed_files.append(parsed)
 
         table = self.comparison_service.comparison_table(parsed_files)
+        goals = await self.decision_service.goal_analysis(parsed_files, table)
 
-        return {"documents": parsed_files, **table}
+        return {"documents": parsed_files, **table, **goals}
