@@ -10,6 +10,7 @@ router = APIRouter(tags=["Auth"])
 user_service = UserService()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="auth/login", auto_error=False)
 
 
 @router.post("/users/registration", summary="Create user")
@@ -33,6 +34,14 @@ async def get_current_user(
     db: AsyncSession = Depends(get_sesion),
 ):
     return await user_service.get_current_user(token, db)
+
+
+async def optional_user(
+    token: str = Depends(oauth2_scheme_optional), db: AsyncSession = Depends(get_sesion)
+):
+    if not token:
+        return None
+    return await get_current_user(token, db)
 
 
 @router.get("/users/me", summary="Get current user")

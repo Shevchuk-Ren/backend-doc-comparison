@@ -20,6 +20,4 @@ class DocumentModel(Base):
     summaries = relationship(
         "DocumentSummary", back_populates="document", cascade="all, delete-orphan"
     )
-    comparisons = relationship(
-        "Comparison", secondary="comparison_documents", back_populates="documents"
-    )
+    comparisons = relationship("ComparisonDocument", back_populates="document")
