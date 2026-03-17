@@ -19,5 +19,11 @@ class Settings(BaseSettings):
     ollama_timeout: int = Field(default=90, alias="OLLAMA_TIMEOUT")
     ollama_key: str = Field(alias="OLLAMA_API_KEY")
 
+    db_url: str = Field(alias="DB_URL")
+
+    secret_auth_key: str = Field(alias="SECRET_AUTH_KEY")
+    algorithm: str = Field(alias="ALGORITHM")
+    access_token_expires_minutes: int = Field(alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+
 
 settings = Settings()

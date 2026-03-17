@@ -72,3 +72,10 @@ docker compose --env-file .env up --build
 #Stop container
 docker compose down
 ```
+
+## Migrations
+```bash
+docker compose exec app alembic revision --autogenerate -m "init"
+docker compose exec app alembic upgrade head
+
+```
