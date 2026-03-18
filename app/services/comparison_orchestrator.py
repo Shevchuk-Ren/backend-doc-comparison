@@ -1,6 +1,5 @@
 from fastapi import HTTPException, UploadFile
 import json
-from app.prompts.document_summary import SYSTEM_PROMPT, build_document_prompt
 
 
 class DocumentOrchestrator:
@@ -11,12 +10,29 @@ class DocumentOrchestrator:
         comparison_service,
         decision_service,
         history_service,
+        summary_service,
     ):
         self.document_service = document_service
         self.llm = llm
         self.comparison_service = comparison_service
         self.decision_service = decision_service
         self.history_service = history_service
+        self.summary_service = summary_service
+
+    def _parse_llm_json(self, raw: str, context: str) -> dict:
+        if not raw or not raw.strip():
+            raise HTTPException(
+                status_code=502,
+                detail=f"LLM returned empty response for {context}",
+            )
+
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            raise HTTPException(
+                status_code=502,
+                detail=f"LLM returned invalid JSON for {context}",
+            )
 
     async def process_documents(self, files: list[UploadFile], user, db) -> dict:
         if not 2 <= len(files) <= 5:
@@ -28,11 +44,16 @@ class DocumentOrchestrator:
         parsed_files = []
         for file in files:
             parsed = await self.document_service.process_single(file)
-            summary_raw = await self.llm.chat(
-                system_prompt=SYSTEM_PROMPT,
-                user_prompt=build_document_prompt(parsed["text"]),
-            )
-            parsed["summary"] = json.loads(summary_raw)
+            # summary_raw = await self.llm.chat(
+            #     system_prompt=SYSTEM_PROMPT,
+            #     user_prompt=build_document_prompt(parsed["text"]),
+            # )
+            summary = await self.summary_service.generate(parsed["text"])
+            parsed["summary"] = summary.model_dump()
+            # parsed["summary"] = self._parse_llm_json(
+            #     summary_raw, context="document summary"
+            # )
+            # parsed["summary"] = json.loads(summary_raw)
             parsed_files.append(parsed)
 
         table = self.comparison_service.comparison_table(parsed_files)

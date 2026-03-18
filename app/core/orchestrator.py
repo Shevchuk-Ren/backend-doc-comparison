@@ -5,6 +5,7 @@ from app.services.history_service import HistoryService
 from app.services.decision_service import DecisionService
 from app.services.document_service import DocumentService
 from app.services.comparison_orchestrator import DocumentOrchestrator
+from app.services.summary_service import SummaryService
 from app.validators.document_validator import DocumentValidator
 from app.db.models.document_model import DocumentModel
 from app.db.models.summaries_model import DocumentSummary
@@ -19,6 +20,7 @@ ollama_service = OllamaService()
 comparison_service = ComparisonService(Comparison, ComparisonDocument)
 decision_service = DecisionService()
 history_service = HistoryService(UserHistory, comparison_service, document_service)
+summary_service = SummaryService(ollama_service)
 
 orchestrator = DocumentOrchestrator(
     document_service,
@@ -26,4 +28,5 @@ orchestrator = DocumentOrchestrator(
     comparison_service,
     decision_service,
     history_service,
+    summary_service,
 )
