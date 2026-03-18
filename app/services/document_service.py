@@ -24,17 +24,23 @@ class DocumentService:
 
     async def save_document(self, db, user_id, file, preview, text):
         doc = self.DocumentModel(
-            user_id=user_id, filename=file.filename, preview=preview, text=text
+            user_id=user_id,
+            filename=file.filename,
+            preview=preview,
+            text=text,
         )
         db.add(doc)
-        await db.commit()
+        await db.flush()
         await db.refresh(doc)
         return doc
 
     async def save_summary(self, db, document, summary):
-        summary_obj = self.SummaryModel(document_id=document.id, summary=summary)
+        summary_obj = self.SummaryModel(
+            document_id=document.id,
+            summary=summary,
+        )
         db.add(summary_obj)
-        await db.commit()
+        await db.flush()
         await db.refresh(summary_obj)
         return summary_obj
 
