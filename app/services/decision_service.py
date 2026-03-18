@@ -1,12 +1,11 @@
 from app.prompts.document_decision import build_decision_prompt, SYSTEM_PROMPT
-from .ollama_service import OllamaService
 from fastapi import HTTPException, status
 import json
 
 
 class DecisionService:
-    def __init__(self):
-        self.ollama_service = OllamaService()
+    def __init__(self, llm_service):
+        self.ollama_service = llm_service
 
     async def goal_analysis(self, summary_data, comparise_table):
 

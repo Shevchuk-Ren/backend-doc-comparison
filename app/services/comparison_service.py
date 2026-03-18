@@ -70,17 +70,14 @@ class ComparisonService:
             decision_summary=decision_summary,
         )
         db.add(comp)
-        await db.commit()
-        await db.refresh(comp)
+        await db.flush()
 
-        # зв’язуємо comparison ↔ documents
         for doc in documents:
             link = self.ComparisonDocumentModel(
                 comparison_id=comp.id, document_id=doc.id
             )
             db.add(link)
 
-        await db.commit()
         return comp
 
     async def get_by_id(self, db, comparison_id):

@@ -18,13 +18,12 @@ parser = DocumentParser()
 document_service = DocumentService(validator, parser, DocumentModel, DocumentSummary)
 ollama_service = OllamaService()
 comparison_service = ComparisonService(Comparison, ComparisonDocument)
-decision_service = DecisionService()
+decision_service = DecisionService(ollama_service)
 history_service = HistoryService(UserHistory, comparison_service, document_service)
 summary_service = SummaryService(ollama_service)
 
 orchestrator = DocumentOrchestrator(
     document_service,
-    ollama_service,
     comparison_service,
     decision_service,
     history_service,
