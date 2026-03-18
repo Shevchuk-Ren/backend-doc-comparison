@@ -10,10 +10,13 @@ class HistoryService:
 
     async def add(self, db, user_id, action, payload, result):
         record = self.history_model(
-            user_id=user_id, action=action, payload=payload, result=result
+            user_id=user_id,
+            action=action,
+            payload=payload,
+            result=result,
         )
         db.add(record)
-        await db.commit()
+        await db.flush()
         await db.refresh(record)
         return record
 
