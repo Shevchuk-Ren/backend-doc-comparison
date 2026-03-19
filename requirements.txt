@@ -1,8 +1,11 @@
+aiosqlite==0.22.1
+alembic==1.14.0
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.12.1
 async-timeout==5.0.1
 asyncpg==0.29.0
+backports.asyncio.runner==1.2.0
 bcrypt==5.0.0
 certifi==2026.2.25
 cffi==2.0.0
@@ -10,6 +13,7 @@ cfgv==3.5.0
 charset-normalizer==3.4.5
 click==8.3.1
 cryptography==46.0.5
+Deprecated==1.3.1
 distlib==0.4.0
 dnspython==2.8.0
 email-validator==2.3.0
@@ -27,8 +31,9 @@ identify==2.6.17
 idna==3.11
 iniconfig==2.3.0
 Jinja2==3.1.6
-PyJWT==2.8.0
+limits==5.8.0
 lxml==6.0.2
+Mako==1.3.10
 markdown-it-py==4.0.0
 MarkupSafe==3.0.3
 mccabe==0.7.0
@@ -50,6 +55,7 @@ pydantic-settings==2.13.1
 pydantic_core==2.41.5
 pyflakes==3.2.0
 Pygments==2.19.2
+PyJWT==2.8.0
 pypdfium2==5.6.0
 python-discovery==1.1.3
 python-docx==1.2.0
@@ -63,6 +69,7 @@ rich-toolkit==0.19.7
 rignore==0.7.6
 sentry-sdk==2.54.0
 shellingham==1.5.4
+slowapi==0.1.9
 sniffio==1.3.1
 SQLAlchemy==2.0.48
 starlette==0.36.3
@@ -76,4 +83,4 @@ uvloop==0.22.1
 virtualenv==21.2.0
 watchfiles==1.1.1
 websockets==16.0
-alembic==1.14.0
+wrapt==2.1.2
