@@ -6,10 +6,6 @@ Multi-Document Comparison & Decision Assistant
 - FastAPI
 - PostgreSQL
 - LLM ollama model (https://ollama.com/)
-- Redis
-- Celery
-- Stripe
-- drf-yasg (Swagger / OpenAPI)
 - Docker
 
 ## Enviroment
