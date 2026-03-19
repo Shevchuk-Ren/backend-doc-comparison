@@ -1,9 +1,18 @@
 import asyncio
 import pytest
+import pytest_asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.pool import StaticPool
+from tests.factories import (
+    UserFactory,
+    DocumentFactory,
+    DocumentSummaryFactory,
+    ComparisonFactory,
+    ComparisonDocumentFactory,
+    UserHistoryFactory,
+)
 
-from app.db.base import Base  # або звідки в тебе metadata/base
+from app.db.base import Base
 
 
 @pytest.fixture(scope="session")
@@ -33,3 +42,23 @@ async def db_session():
         yield session
 
     await engine.dispose()
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def setup_factories(db_session):
+    factories = [
+        UserFactory,
+        DocumentFactory,
+        DocumentSummaryFactory,
+        ComparisonFactory,
+        ComparisonDocumentFactory,
+        UserHistoryFactory,
+    ]
+
+    for factory_cls in factories:
+        factory_cls._meta.sqlalchemy_session = db_session
+
+    yield
+
+    for factory_cls in factories:
+        factory_cls._meta.sqlalchemy_session = None
